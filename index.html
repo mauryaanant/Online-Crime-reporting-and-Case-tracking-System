@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Crime Reporting System</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: white;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 600;
+        }
+
+        .hero p {
+            opacity: 0.85;
+            font-size: 1.1rem;
+        }
+
+        /* BUTTONS */
+        .btn-main {
+            background: #e63946;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover {
+            background: #c1121f;
+            transform: scale(1.05);
+        }
+
+        .btn-outline-light {
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+
+        .btn-outline-light:hover {
+            transform: scale(1.05);
+        }
+
+        /* HERO IMAGE ANIMATION */
+        .hero img {
+            transition: transform 0.5s ease;
+        }
+
+        .hero img:hover {
+            transform: scale(1.1) rotate(3deg);
+        }
+
+        /* FEATURES */
+        .card-feature {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card-feature:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        }
+
+        /* ICON STYLE */
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        /* STATS SECTION */
+        .stats {
+            background: rgba(255,255,255,0.05);
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .stat-box {
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.1);
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(0,0,0,0.4);
+            padding: 25px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #ccc;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg px-4">
+
+    <a class="navbar-brand text-white fw-bold" href="/">Crime Portal</a>
+
+    <div class="ms-auto">
+
+        <a href="/complaint" class="btn btn-main me-2">Report</a>
+        <a href="/track" class="btn btn-outline-light me-2">Track</a>
+
+        <span th:if="${session.user != null}" class="me-2">
+            Welcome, <b th:text="${session.user.name}"></b>
+        </span>
+
+        <a th:if="${session.user == null}" href="/login" class="btn btn-outline-light me-2">Login</a>
+
+        <a th:if="${session.user != null}" href="/logout" class="btn btn-danger">Logout</a>
+
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero container">
+    <div class="row align-items-center">
+
+        <div class="col-md-6">
+            <h1>Report Crimes.<br>Track Justice.</h1>
+
+            <p class="mt-3">
+                Secure, fast, and transparent system to report incidents, upload evidence,
+                and track case progress in real-time.
+            </p>
+
+            <div class="mt-4">
+                <a th:href="@{/complaint}" class="btn btn-main me-3">🚨 Report Now</a>
+                <a th:href="@{/track}" class="btn btn-outline-light">🔍 Track Complaint</a>
+            </div>
+        </div>
+
+        <div class="col-md-6 text-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"
+                 width="320" class="img-fluid">
+        </div>
+
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="container my-5">
+    <h2 class="text-center mb-5">Why Use Our System?</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card-feature text-center">
+                <div class="feature-icon">📝</div>
+                <h4>Easy Reporting</h4>
+                <p>Submit complaints quickly with file upload support.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-feature text-center">
+                <div class="feature-icon">📍</div>
+                <h4>Real-Time Tracking</h4>
+                <p>Track your complaint using a unique complaint ID.</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card-feature text-center">
+                <div class="feature-icon">🛡️</div>
+                <h4>Admin Control</h4>
+                <p>Authorities manage and resolve complaints efficiently.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 stat-box">
+                <h2>500+</h2>
+                <p>Complaints Filed</p>
+            </div>
+
+            <div class="col-md-4 stat-box">
+                <h2>300+</h2>
+                <p>Resolved Cases</p>
+            </div>
+
+            <div class="col-md-4 stat-box">
+                <h2>24/7</h2>
+                <p>Support System</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="text-center my-5">
+    <h3>Take Action Today</h3>
+    <p>Help make your community safer.</p>
+
+    <a th:href="@{/complaint}" class="btn btn-main mt-3">File Complaint</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 Crime Reporting System</p>
+
+    <!-- 🔥 STATIC LINKS -->
+    <div class="mt-2">
+        <a href="aboutUs.html">About Us</a> |
+        <a href="ContactUs.html">Contact</a> |
+        <a href="Privacy_policy.html">Privacy Policy</a>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <!-- 🔥 HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white shadow-sm rounded">
+
+        <div>
+            <h3 class="mb-0 fw-bold">🚔 Admin Dashboard</h3>
+            <small class="text-muted">
+                Welcome, <span th:text="${session.user.name}"></span>
+            </small>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="/admin/profile" class="btn btn-outline-dark btn-sm">👤 Profile</a>
+            <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+        </div>
+
+    </div>
+
+    <!-- 🔥 SUMMARY CARDS -->
+    <div class="row text-center mb-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Total Complaints</h6>
+                <h3 th:text="${#lists.size(complaints)}"></h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Pending</h6>
+                <h3 th:text="${#lists.size(complaints.?[status=='PENDING'])}"></h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3">
+                <h6>Resolved</h6>
+                <h3 th:text="${#lists.size(complaints.?[status=='RESOLVED'])}"></h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 🔥 TABLE -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center align-middle bg-white">
+
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Evidence</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="c : ${complaints}">
+
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.title}"></td>
+                <td th:text="${c.category}"></td>
+
+                <!-- STATUS -->
+                <td>
+                    <span class="badge bg-warning text-dark"
+                          th:if="${c.status == 'PENDING'}">Pending</span>
+
+                    <span class="badge bg-info"
+                          th:if="${c.status == 'IN_PROGRESS'}">In Progress</span>
+
+                    <span class="badge bg-success"
+                          th:if="${c.status == 'RESOLVED'}">Resolved</span>
+                </td>
+
+                <!-- PRIORITY -->
+                <td>
+                    <span class="badge bg-secondary"
+                          th:if="${c.priority == 'LOW'}">Low</span>
+
+                    <span class="badge bg-primary"
+                          th:if="${c.priority == 'MEDIUM'}">Medium</span>
+
+                    <span class="badge bg-danger"
+                          th:if="${c.priority == 'HIGH'}">High</span>
+                </td>
+
+                <!-- FILE -->
+                <td>
+                    <a th:href="@{'/files/' + ${c.evidencePath}}"
+                       target="_blank"
+                       class="btn btn-sm btn-outline-primary">
+                        View
+                    </a>
+                </td>
+
+                <!-- ACTIONS (INLINE 🔥) -->
+                <td>
+
+                    <!-- STATUS -->
+                    <form action="/admin/updateStatus" method="post" class="d-flex gap-1 mb-1">
+                        <input type="hidden" name="id" th:value="${c.id}" />
+
+                        <select name="status" class="form-select form-select-sm">
+                            <option th:selected="${c.status == 'PENDING'}">PENDING</option>
+                            <option th:selected="${c.status == 'IN_PROGRESS'}">IN_PROGRESS</option>
+                            <option th:selected="${c.status == 'RESOLVED'}">RESOLVED</option>
+                        </select>
+
+                        <button class="btn btn-success btn-sm"
+                                onclick="return confirm('Update status?')">
+                            ✔
+                        </button>
+                    </form>
+
+                    <!-- PRIORITY -->
+                    <form action="/admin/updatePriority" method="post" class="d-flex gap-1">
+                        <input type="hidden" name="id" th:value="${c.id}" />
+
+                        <select name="priority" class="form-select form-select-sm">
+                            <option th:selected="${c.priority == 'LOW'}">LOW</option>
+                            <option th:selected="${c.priority == 'MEDIUM'}">MEDIUM</option>
+                            <option th:selected="${c.priority == 'HIGH'}">HIGH</option>
+                        </select>
+
+                        <button class="btn btn-danger btn-sm"
+                                onclick="return confirm('Update priority?')">
+                            ⚡
+                        </button>
+                    </form>
+
+                </td>
+            </tr>
+
+            <!-- EMPTY STATE -->
+            <tr th:if="${#lists.isEmpty(complaints)}">
+                <td colspan="7" class="text-muted">No complaints found</td>
+            </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
